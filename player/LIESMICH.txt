@@ -1,0 +1,16 @@
+  _____                        _     _____  _                       
+ |  __ \                      | |   |  __ \| |                      
+ | |__) |   _ _ __  _ __   ___| |_  | |__) | | __ _ _   _  ___ _ __ 
+ |  ___/ | | | '_ \| '_ \ / _ \ __| |  ___/| |/ _` | | | |/ _ \ '__|
+ | |   | |_| | |_) | |_) |  __/ |_  | |    | | (_| | |_| |  __/ |   
+ |_|    \__,_| .__/| .__/ \___|\__| |_|    |_|\__,_|\__, |\___|_|   
+             | |   | |                               __/ |          
+             |_|   |_|                              |___/           
+
+German:
+-------
+
+Willkommen! Bitte klicken Sie auf die Datei "Windows-Start.bat" oder "Linux-Start.sh", 
+um den Player-Server zu starten. Die Player-Oberfläche wird automatisch geöffnet. 
+Andere Geräte können die Player-Oberfläche über die IP-Adresse des Computers erreichen. 
+Schließen Sie das geöffnete Konsolen-Fenster, um den Player-Server zu beenden.

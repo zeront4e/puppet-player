@@ -1,0 +1,40 @@
+"button-click-sound.mp3":
+URL: https://freesound.org/people/birdOfTheNorth/sounds/645937/
+LICENSE: CC0 1.0 Universal (CC0 1.0)
+LICENSE-URL: https://creativecommons.org/publicdomain/zero/1.0/
+
+"welcome.mp3":
+URL: https://freesound.org/people/soneproject/sounds/244356/
+LICENSE: CC0 1.0 Universal (CC0 1.0)
+LICENSE-URL: https://creativecommons.org/publicdomain/zero/1.0/
+
+"background-image.jpg":
+URL: https://unsplash.com/photos/hoS3dzgpHzw
+LICENSE: Unsplash License
+LICENSE-URL: https://unsplash.com/license
+
+"cover.jpg":
+URL: https://studio.blender.org/films/elephants-dream/gallery/?asset=1069
+LICENSE: Attribution 4.0 International (CC BY 4.0) 
+LICENSE-URL: https://creativecommons.org/licenses/by/4.0/
+ATTRIBUTION: (c) copyright 2006, Blender Foundation / Netherlands Media Art Institute / www.elephantsdream.org
+
+Files in "content":
+URL: https://orange.blender.org/download/
+LICENSE: Attribution 2.5 Generic (CC BY 2.5) 
+LICENSE-URL: https://creativecommons.org/licenses/by/2.5/
+ATTRIBUTION: (c) copyright 2006, Blender Foundation / Netherlands Media Art Institute / www.elephantsdream.org
+
+Files in "extra-content":
+URL: https://www.youtube.com/watch?v=kPdv44HtEoA
+LICENSE: Attribution 3.0 Unported
+LICENSE-URL: https://creativecommons.org/licenses/by/3.0/legalcode
+ATTRIBUTION:
+The Orange Open Movie team:
+Director: Bassam Kurdali
+Artists: Andy Goralczyk, Bastian Salmela, Lee Salvemini, Matt Ebb.
+TD: Toni Alatalo
+Music: Jan Morgenstern
+Voices: Tygo Gernandt, Cas Jansen
+Production: Ton Roosendaal
+Re-rendered version by Andy Goralczyk.

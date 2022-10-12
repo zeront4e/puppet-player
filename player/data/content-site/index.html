@@ -1,0 +1,378 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Puppet Player</title>
+        <link rel="icon" href="cover.jpg">
+        <link href="css/iziToast.css" rel="stylesheet">
+        <link href="css/custom.css" rel="stylesheet">
+        <link href="css/plyr.css" rel="stylesheet">
+        <link href="css/all.min.css" rel="stylesheet">
+    </head>
+
+    <body class="animated-background-image">
+        <span id="appContainer">
+            <!-- introContainer -> Contains the intro-animation components (actually used to load and generate data in the background). -->
+            <!-- Original intro animation concept by Codegrid: https://github.com/codegridweb/Intro-Text-Animation-Using-Pure-CSS -->
+            <div id="introContainer">
+                <div class="intro-background">
+                    <span id="introAnimation">
+                        <div class='intro-light intro-x1'></div>
+                        <div class='intro-light intro-x2'></div>
+                        <div class='intro-light intro-x3'></div>
+                        <div class='intro-light intro-x4'></div>
+                        <div class='intro-light intro-x5'></div>
+                        <div class='intro-light intro-x6'></div>
+                        <div class='intro-light intro-x7'></div>
+                        <div class='intro-light intro-x8'></div>
+                        <div class='intro-light intro-x9'></div>
+                    </span>
+                </div>
+
+                <img id="introImage" class="intro-header-image intro-floating" :src="coverImagePath"></img>
+
+                <div id="introLoadingAnimation" class="lds-ring"><div></div><div></div><div></div><div></div></div>
+
+                <button id="introButton" class="intro-button" @click="onBtnContinueToMainMenu()" style="display: none;">
+                    {{ returnLocalizationString("continue") }}
+                </button>
+        
+                <!-- intro-text-container -> The static intro text before any localization. -->
+                <div class="intro-text-container">
+                    <div class="intro-text-wrapper">
+                        <div class="intro-text-1 intro-text">
+                            Initializing puppet-player!
+                        </div>
+                        
+                        <div class="intro-text-2 intro-text">
+                            Initializing puppet-player!
+                        </div>
+                        
+                        <div class="intro-text-3 intro-text">
+                            Initializing puppet-player!
+                        </div>
+                        
+                        <div class="intro-text-4 intro-text">
+                            Initializing puppet-player!
+                        </div>
+                        
+                        <div class="intro-text-5 intro-text">
+                            Initializing puppet-player!
+                        </div>
+                        
+                        <div class="intro-text-6 intro-text">
+                            Initializing puppet-player!
+                        </div>
+                        
+                        <div class="intro-text-7 intro-text">
+                            Initializing puppet-player!
+                        </div>
+                        
+                        <div class="intro-text-8 intro-text">
+                            Initializing puppet-player!
+                        </div>
+                        
+                        <div class="intro-text-9 intro-text">
+                            Initializing puppet-player!
+                        </div>
+                        
+                        <div class="intro-text-10 intro-text">
+                            Initializing puppet-player!
+                        </div>
+                        
+                        <div class="intro-text-11 intro-text">
+                            Initializing puppet-player!
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- overlay -> An overlay layer between the background (image or video) and the player- or menu-GUI. -->
+            <div class="overlay"></div>
+
+            <!-- background-video -> An optional background-video. -->
+            <video id="background-video" playsinline loop :muted="!settingsPlayBackgroundVideoSound" class="background-video"
+            v-show="showBackgroundVideo" :key="backgroundVideoPath">
+                <source :src="backgroundVideoPath">
+            </video>
+
+            <!-- top-navigation-container -> Navigation and menu-interface components. -->
+            <div class="top-navigation-container">
+                <button type="button" class="top-navigation-item custom-transparent-button"
+                @click="onBtnBackToMenuFromPlayer()"
+                v-show="showBackToMenuButton">
+                    <p class="text-light fs-medium font-shadow">
+                        <span class="fa-solid fa-arrow-left fa-xl icon" style="margin-right: 0.25em;"></span>
+                        {{ returnLocalizationString("back") }}
+                    </p>
+                </button>
+
+                <button type="button" class="top-navigation-item custom-transparent-button"
+                @click="onBtnShowSettings()" v-show="!guiHideMainMenuUi">
+                    <p class="text-light description">
+                        <span class="fa-solid fa-gear fa-xl icon font-shadow" style="margin-right: 0.25em;"></span>
+                    </p>
+                </button>
+
+                <button type="button" class="top-navigation-item custom-transparent-button"
+                @click="toggleBackgroundVideoSound(false)" v-show="showMainMenuMuteButton && settingsPlayBackgroundVideoSound">
+                    <p class="text-light description">
+                        <span class="fa-solid fa-volume-up fa-xl icon font-shadow" style="margin-right: 0.25em;"></span>
+                    </p>
+                </button>
+
+                <button type="button" class="top-navigation-item custom-transparent-button"
+                @click="toggleBackgroundVideoSound(true)" v-show="showMainMenuMuteButton && !settingsPlayBackgroundVideoSound">
+                    <p class="text-light description">
+                        <span class="fa-solid fa-volume-off fa-xl icon font-shadow" style="margin-right: 0.25em;"></span>
+                    </p>
+                </button>
+            </div>
+
+            <!-- main-menu-container -> Main menu GUI. -->
+            <div class="main-menu-container" v-show="!guiHideMainMenuUi">
+                <img class="image-cover" src="cover.jpg">
+
+                <div class="title-description-container">
+                    <span class="fw-bold text-light fs-large font-shadow">
+                        {{ contentsMetaData.generalContentTitle }}
+                    </span>
+                    
+                    <p class="text-light fs-medium lh-medium font-shadow">
+                        {{ contentsMetaData.generalContentDescription }}
+                    </p>
+                </div>
+
+                <div class="navigation-container blur">
+                    <button type="button" class="custom-button navigation-item play-button"
+                        @click="onBtnPlayFirstContent()" v-show="!mainMenuPlayerStorageAvailable">
+                        {{ returnLocalizationString("play") }}
+                    </button>
+                    
+                    <button type="button" class="custom-button navigation-item play-button"
+                        @click="onBtnPlayLastPlayedContent()" v-show="mainMenuPlayerStorageAvailable">
+                        {{ returnLocalizationString("continue") }}
+                    </button>
+                    
+                    <button type="button" class="custom-button navigation-item episode-button"
+                        @click="onBtnShowEpisodesMenu()" v-show="contents.length > 1">
+                        {{ returnLocalizationString("episodeSelection") }}
+                    </button>
+                    
+                    <button type="button" class="custom-button navigation-item" @click="onBtnShowExtraContentsMenu()"
+                        v-show="extraContents.length > 0">
+                        {{ returnLocalizationString("extras") }}
+                    </button>
+                </div>
+            </div>
+
+            <!-- player-container -> Player GUI. -->
+            <div class="player-container" v-show="!guiHidePlayerUi">
+                <div class="player-inside-container">
+                    <p class="player-item text-light fs-medium font-shadow">{{ playerTitle }}</p>
+
+                    <video class="player-item player" id="plyr-video" style="--plyr-color-main: #f40612; --plyr-control-icon-size: 20px;">
+                    </video>
+
+                    <div class="player-item player-bottom-navigation-container">
+                        <div class="navigation-item-container">
+                            <button :disabled="!isPreviousContentAvailable" type="button" class="navigation-button custom-transparent-button"
+                                @click="onBtnPlayPreviousContent()" >
+                                <p class="text-light fs-medium font-shadow">
+                                    <span class="fa-solid fa-angles-left fa-xl icon" style="margin-right: 0.25em;"></span>
+                                    {{ returnLocalizationString("previousEpisode") }}
+                                </p>
+                            </button>
+                        </div>
+
+                        <div class="navigation-item-container">
+                            <button :disabled="!isNextContentAvailable" type="button" class="navigation-button custom-transparent-button"
+                                @click="onBtnPlayNextContent()">
+                                <p class="text-light fs-medium font-shadow">
+                                    {{ returnLocalizationString("nextEpisode") }}
+                                    <span class="fa-solid fa-angles-right fa-xl icon" style="margin-left: 0.25em;"></span>
+                                </p>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- contents-overview-container -> Main contents overview GUI. -->
+            <div class="contents-overview-container" v-show="!guiHideContentsUi">
+                <div class="contents-inside-container">
+                    <div class="contents-container blur">
+                        <span class="text-light fs-medium font-shadow">
+                            {{ returnLocalizationString("episodes") }}
+                        </span>
+
+                        <div class="content-container" v-for="(tmpContent, index) in contents">
+                            <img class="content-thumbnail" :src="imageSrcFromBlobOrDefault(tmpContent.previewBlob)"
+                                @click="onBtnPlaySelectedContent(tmpContent, index)" style="cursor: pointer">
+                            
+                                <div class="content-title-description-container">
+                                <div class="content-title-duration-container">
+                                    <span class="text-light fs-medium font-shadow" style="cursor: pointer"
+                                        @click="onBtnPlaySelectedContent(tmpContent, index)">
+                                        {{ tmpContent.contentTitle }}
+                                    </span>
+                                    
+                                    <span class="text-light fs-small font-shadow">
+                                        {{ millisecondsToTimeString(tmpContent.contentDurationInMilliseconds) }} min
+                                    </span>
+                                </div>
+
+                                <span class="text-light fs-small font-shadow lh-small">
+                                    {{ tmpContent.contentDescription }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- contents-overview-container -> Extra contents overview GUI. -->
+            <div class="contents-overview-container" v-show="!guiHideExtraContentsUi">
+                <div class="contents-inside-container">
+                    <div class="contents-container blur">
+                        <span class="text-light fs-medium font-shadow">
+                            {{ returnLocalizationString("extraContents") }}
+                        </span>
+
+                        <div class="content-container" v-for="(tmpContent, index) in extraContents">
+                            <img class="content-thumbnail" :src="imageSrcFromBlobOrDefault(tmpContent.previewBlob)"
+                                @click="onBtnPlaySelectedContent(tmpContent, index)" style="cursor: pointer">
+                            <div class="content-title-description-container">
+                                <div class="content-title-duration-container">
+                                    <span class="text-light fs-medium font-shadow" style="cursor: pointer"
+                                        @click="onBtnPlaySelectedContent(tmpContent, index)">
+                                        {{ tmpContent.contentTitle }}
+                                    </span>
+                                    
+                                    <span class="text-light fs-small font-shadow">
+                                        {{ millisecondsToTimeString(tmpContent.contentDurationInMilliseconds) }} min
+                                    </span>
+                                </div>
+
+                                <span class="text-light fs-small font-shadow lh-small">
+                                    {{ tmpContent.contentDescription }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- settings-overview-container -> Settings GUI. -->
+            <div class="settings-overview-container" v-show="!guiHideSettingsUi">
+                <div class="settings-container blur">
+                    <span class="text-light fs-medium font-shadow">
+                        {{ returnLocalizationString("settings") }}
+                    </span>
+                    
+                    <div class="settings-item-container">
+                        <span class="fs-small text-light">
+                            {{ returnLocalizationString("txtPlayBackgroundVideoIfPresent") }}
+                        </span>
+
+                        <label class="pure-material-switch">
+                            <input type="checkbox" v-model="settingsPlayBackgroundVideo">
+                            <span></span>
+                        </label>
+                    </div>
+                    
+                    <div class="settings-item-container">
+                        <span class="fs-small text-light">
+                            {{ returnLocalizationString("txtPlayBackgroundVideoInAllMenus") }}
+                        </span>
+                        
+                        <label class="pure-material-switch">
+                            <input type="checkbox" v-model="settingsPlayBackgroundVideoInAllMenus">
+                            <span></span>
+                        </label>
+                    </div>
+                    
+                    <div class="settings-item-container">
+                        <span class="fs-small text-light">
+                            {{ returnLocalizationString("txtPlayBackgroundVideoSoundIfPresent") }}
+                        </span>
+                        
+                        <label class="pure-material-switch">
+                            <input type="checkbox" v-model="settingsPlayBackgroundVideoSound">
+                            <span></span>
+                        </label>
+                    </div>
+                    
+                    <div class="settings-item-container">
+                        <span class="fs-small text-light">
+                            {{ returnLocalizationString("txtEnterFullscreenAfterIntro") }}
+                        </span>
+                        
+                        <label class="pure-material-switch">
+                            <input type="checkbox" v-model="settingsEnterFullscreenAfterIntro">
+                            <span></span>
+                        </label>
+                    </div>
+                    
+                    <div class="settings-item-container">
+                        <span class="fs-small text-light">
+                            {{ returnLocalizationString("txtEnterFullscreenOnContentPlayback") }}
+                        </span>
+                        
+                        <label class="pure-material-switch">
+                            <input type="checkbox" v-model="settingsPlayerEnterFullscreen">
+                            <span></span>
+                        </label>
+                    </div>
+                    
+                    <div class="settings-item-container">
+                        <span class="fs-small text-light">
+                            {{ returnLocalizationString("txtEnableContentAutoPlayback") }}
+                        </span>
+                        
+                        <label class="pure-material-switch">
+                            <input type="checkbox" v-model="settingsPlayerAutoplay">
+                            <span></span>
+                        </label>
+                    </div>
+                    
+                    <div class="settings-item-container">
+                        <span class="fs-small text-light">
+                            {{ returnLocalizationString("txtAutoRestrictPlayerMobileGui") }}
+                        </span>
+                        
+                        <label class="pure-material-switch">
+                            <input type="checkbox" v-model="settingsAutoRestrictMobilePlayerGui">
+                            <span></span>
+                        </label>
+                    </div>
+                    
+                    <div class="settings-item-container">
+                        <button type="button" class="custom-button"
+                        @click="onBtnClearLocalStorage()">
+                            <span class="text-light font-shadow">
+                                {{ returnLocalizationString("txtClearLastPlayedContentData") }}
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </span>
+
+        <!-- sha256.js -> Needed to generate a local-storage-identifier in some browsers. -->
+        <script src="js/sha256.js" type="text/javascript"></script>
+
+        <!-- plyr.js -> KISS player library. -->
+        <script src="js/plyr.js" type="text/javascript"></script>
+
+        <!-- iziToast.js -> Nice toast messages. -->
+        <script src="js/iziToast.js" type="text/javascript"></script>
+        
+        <!-- vue.global.js -> It's VUE! -->
+        <script src="js/vue.global.js" type="text/javascript"></script>
+        
+        <!-- puppet-player.js -> The actual VUE application. -->
+        <script src="js/puppet-player.js" type="text/javascript"></script>
+    </body>
+</html>
