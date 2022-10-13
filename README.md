@@ -3,11 +3,14 @@
 
 A web based BluRay- or DVD-menu like alternative.
 
+![gui-screenshots](https://github.com/zeront4e/puppet-player/blob/main/static/gui-screenshots.jpg?raw=true)
+
 ## Features 📦
 * Create a menu for recorded movies, series or other content
 * Includes a main menu, a settings menu, a main content menu and an extra content menu
 * Configuration via JSON, without programming knowledge
 * Integrated web server to play content locally or over the local network
+* Responsive GUI
 * Auto-play for main content and extra content, once a video is finished
 * Automatic preview generation in content menus
 * Storage of the last played content and all user-settings
