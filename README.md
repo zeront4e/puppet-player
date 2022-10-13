@@ -15,7 +15,7 @@ A web based BluRay- or DVD-menu like alternative.
 * Customizable background-video (optional), background-image and cover-image, displayed in all menus
 
 # Usage ⚙
-To test the software, or to crete a custom menu, download the content of this repository. The relevant files are located in the "player" directory.
+To test the software, or to create a custom menu, download the content of this repository. The relevant files are located in the "player" directory.
 
 ## Access the content locally or over the local network
 * Execute the file "Linux-Start.sh" or the file "Windows-Start.bat" in the "player" directory, depending on the used operating system. After that, the server is automatically started and the player-interface is opened in a local browser window (see the "README.txt" file inside the player-directory).
