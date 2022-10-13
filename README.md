@@ -32,3 +32,7 @@ To test the software, or to crete a custom menu, download the content of this re
 * Change the background-image file (path "player/data/content-site/background-image.jpg"). Supported formats are ".png", ".jpg", ".jpeg", ".webp", ".gif" and ".bmp".
 * Add an optional background-video file (example path "player/data/content-site/background-video.mp4"). Supported formats are ".mkv", ".avi", ".mp4", ".webm" and ".mpeg".
 * Modify the localization file, if desired (path "player/data/content-site/localization.json").
+
+# Credits
+* ⌨️ Code and concept by [zeront4e](https://github.com/zeront4e)
+* 🖥 Design and additional code by [Michael-Jk](https://github.com/Michael-Jk)
