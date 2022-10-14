@@ -270,6 +270,7 @@ createApp({
 
             this.guiLastMenuUI = MAIN_MENU_GUI;
 
+            this.playerUsesContentsIndex = true;
             this.contentsIndex = 0;
 
             this.playContent(this.contents[0], true, this.settingsPlayerEnterFullscreen, 0);
