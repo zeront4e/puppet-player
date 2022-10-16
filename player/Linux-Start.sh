@@ -1,1 +1,1 @@
-cd data && ./redbean-2.1.com -p 8489 -D content-site -w /
+cd data && xdg-open http://127.0.0.1:8489 && ./ran_linux_amd64 -r content-site -p 8489 -gzip=false

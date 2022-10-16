@@ -1,0 +1,1 @@
+cd data && ./ran_linux_arm64 -r content-site -p 8489 -gzip=false & xdg-open http://127.0.0.1:8489
