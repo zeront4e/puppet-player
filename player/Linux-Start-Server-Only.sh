@@ -1,0 +1,1 @@
+cd data && ./ran_linux_amd64 -r content-site -p 8489 -gzip=false

@@ -10,7 +10,9 @@
 English:
 --------
 
-Welcome! Please click on the file "Windows-Start.bat" or "Linux-Start.sh" to start the player server.
-The player interface will open automatically.
+Welcome! Please execute the file "Windows-Start.bat", "Linux-Start.sh" or "Linux-Arm64-Start.sh" to start the player
+server. The player interface will open automatically.
+If the file "Windows-Start-Server-Only.bat", "Linux-Start-Server-Only.sh" or "Linux-Arm64-Start-Server-Only.sh" was
+executed, the interface will not open automatically.
 Other devices can reach the player interface by the IP address of the computer. 
 Close the opened console window to exit the player server.

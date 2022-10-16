@@ -1,2 +1,2 @@
 cd "%~dp0data\"
-redbean-2.1.com -p 8489 -D content-site -w /
+ran_windows_amd64.exe -r content-site -p 8489 -gzip=false | explorer "http://127.0.0.1:8489"

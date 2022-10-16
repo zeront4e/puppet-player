@@ -10,7 +10,9 @@
 German:
 -------
 
-Willkommen! Bitte klicken Sie auf die Datei "Windows-Start.bat" oder "Linux-Start.sh", 
-um den Player-Server zu starten. Die Player-Oberfläche wird automatisch geöffnet. 
+Willkommen! Bitte führen Sie die Datei "Windows-Start.bat", "Linux-Start.sh" oder "Linux-Arm64-Start.sh" aus,
+um den Player-Server zu starten. Die Player-Oberfläche wird automatisch geöffnet.
+Wenn die Datei "Windows-Start-Server-Only.bat", "Linux-Start-Server-Only.sh" oder "Linux-Arm64-Start-Server-Only.sh"
+ausgeführt wurde, wird die Player-Oberfläche nicht automatisch geöffnet.
 Andere Geräte können die Player-Oberfläche über die IP-Adresse des Computers erreichen. 
 Schließen Sie das geöffnete Konsolen-Fenster, um den Player-Server zu beenden.
