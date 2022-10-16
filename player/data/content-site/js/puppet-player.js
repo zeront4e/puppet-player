@@ -43,6 +43,10 @@ const PLAYER_CONTROLS_ARRAY = [
     'duration', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen'
 ];
 
+const GUI_MAIN_MENU_IMAGE_COVER_WIDTH = 300;
+const GUI_MAIN_MENU_TITLE_FONT_SIZE = 2.6;
+const GUI_MAIN_MENU_MENU_DESCRIPTION_FONT_SIZE = 1.5;
+
 const {
     createApp
 } = Vue
@@ -73,10 +77,14 @@ createApp({
             settingsPlayerEnterFullscreen: true,
             settingsEnterFullscreenAfterIntro: false,
             settingsAutoRestrictMobilePlayerGui: true,
+            settingsResizingSteps: 0,
 
             //General GUI variables.
             guiCurrentUI: MAIN_MENU_GUI,
             guiLastMenuUI: MAIN_MENU_GUI,
+            guiMainMenuImageCoverWidth: GUI_MAIN_MENU_IMAGE_COVER_WIDTH,
+            guiMainMenuTitleFontSize: GUI_MAIN_MENU_TITLE_FONT_SIZE,
+            guiMainMenuDescriptionFontSize: GUI_MAIN_MENU_MENU_DESCRIPTION_FONT_SIZE,
             guiIntroCoverImageWidth: 300,
 
             //Player and player GUI variables.
@@ -167,6 +175,57 @@ createApp({
         this.loadAndSetupInitialData();
     },
     methods: {
+        onBtnZoomChange: function(isZoomIn) {
+            if(isZoomIn) {
+                this.settingsResizingSteps += 1;
+            }
+            else {
+                this.settingsResizingSteps -= 1;
+            }
+
+            if(this.settingsResizingSteps === 0) {
+                this.guiMainMenuImageCoverWidth = GUI_MAIN_MENU_IMAGE_COVER_WIDTH;
+                this.guiMainMenuTitleFontSize = GUI_MAIN_MENU_TITLE_FONT_SIZE;
+                this.guiMainMenuDescriptionFontSize = GUI_MAIN_MENU_MENU_DESCRIPTION_FONT_SIZE;
+            }
+            else {
+                let iterations = 0;
+                let inversion = 1;
+
+                if(this.settingsResizingSteps < 0) {
+                    iterations = this.settingsResizingSteps * -1;
+                    inversion = -1;
+                }
+                else {
+                    iterations = this.settingsResizingSteps;
+                }
+
+                let guiMainMenuImageCoverWidth = GUI_MAIN_MENU_IMAGE_COVER_WIDTH;
+                let guiMainMenuTitleFontSize = GUI_MAIN_MENU_TITLE_FONT_SIZE;
+                let guiMainMenuDescriptionFontSize = GUI_MAIN_MENU_MENU_DESCRIPTION_FONT_SIZE;
+
+                for (let index = 0; index < iterations; index++) {
+                    const nextGuiMainMenuImageCoverWidth = guiMainMenuImageCoverWidth + guiMainMenuImageCoverWidth * 0.25 * inversion;
+
+                    if(nextGuiMainMenuImageCoverWidth > 0)
+                        guiMainMenuImageCoverWidth = nextGuiMainMenuImageCoverWidth;
+
+                    const nextGuiMainMenuTitleFontSize = guiMainMenuTitleFontSize + guiMainMenuTitleFontSize * 0.25 * inversion;
+
+                    if(nextGuiMainMenuImageCoverWidth > 0)
+                        guiMainMenuTitleFontSize = nextGuiMainMenuTitleFontSize;
+
+                    const nextGuiMainMenuDescriptionFontSize = guiMainMenuDescriptionFontSize + guiMainMenuDescriptionFontSize * 0.25 * inversion;
+
+                    if(nextGuiMainMenuDescriptionFontSize > 0)
+                        guiMainMenuDescriptionFontSize = nextGuiMainMenuDescriptionFontSize;
+                }
+
+                this.guiMainMenuImageCoverWidth = guiMainMenuImageCoverWidth;
+                this.guiMainMenuTitleFontSize = guiMainMenuTitleFontSize;
+                this.guiMainMenuDescriptionFontSize = guiMainMenuDescriptionFontSize;
+            }
+        },
         onBtnClearLocalStorage: function() {
             this.playButtonSound();
 

@@ -146,14 +146,16 @@ limitations under the License.
 
             <!-- main-menu-container -> Main menu GUI. -->
             <div class="main-menu-container" v-show="!guiHideMainMenuUi">
-                <img class="image-cover" src="cover.jpg">
+                <img class="image-cover" src="cover.jpg" :style="{ width: guiMainMenuImageCoverWidth + 'px'}">
 
                 <div class="title-description-container">
-                    <span class="fw-bold text-light fs-large font-shadow">
+                    <span class="fw-bold text-light fs-large font-shadow" 
+                    :style="{ 'font-size': guiMainMenuTitleFontSize + 'em'}">
                         {{ contentsMetaData.generalContentTitle }}
                     </span>
                     
-                    <p class="text-light fs-medium lh-medium font-shadow">
+                    <p class="text-light fs-medium lh-medium font-shadow"
+                    :style="{ 'font-size': guiMainMenuDescriptionFontSize + 'em'}">
                         {{ contentsMetaData.generalContentDescription }}
                     </p>
                 </div>
@@ -360,6 +362,32 @@ limitations under the License.
                             <input type="checkbox" v-model="settingsAutoRestrictMobilePlayerGui">
                             <span></span>
                         </label>
+                    </div>
+
+                    <div class="settings-item-container">
+                        <span class="fs-small text-light">
+                            {{ returnLocalizationString("zooming") }}
+                        </span>
+
+                        <div>
+                            <button type="button" class="top-navigation-item custom-transparent-button"
+                            @click="onBtnZoomChange(false)">
+                                <p class="text-light description">
+                                    <span class="fa-solid fa-minus fa-xl icon font-shadow" style="margin-right: 0.25em;"></span>
+                                </p>
+                            </button>
+
+                            <span class="fs-small text-light">
+                                {{ settingsResizingSteps }}
+                            </span>
+
+                            <button type="button" class="top-navigation-item custom-transparent-button"
+                            @click="onBtnZoomChange(true)">
+                                <p class="text-light description">
+                                    <span class="fa-solid fa-plus fa-xl icon font-shadow" style="margin-right: 0.25em;"></span>
+                                </p>
+                            </button>
+                        </div>
                     </div>
                     
                     <div class="settings-item-container">
