@@ -1,0 +1,56 @@
+This file contains all license information for the software libraries used and all other components of the project.
+The license texts are located at the directory "player/data/license-files".
+
+Libraries:
+----------
+
+Title:      iziToast
+URL:        https://github.com/marcelodolza/iziToast
+License:    Apache-2.0
+
+Title:      plyr
+URL:        https://github.com/sampotts/plyr
+License:    MIT
+
+Title:      js-sha256
+URL:        https://github.com/emn178/js-sha256
+License:    MIT
+
+Title:      vue
+URL:        https://github.com/vuejs/vue
+License:    MIT
+
+Software:
+---------
+
+Title:      Ran
+URL:        https://github.com/m3ng9i/ran
+License:    MIT
+
+Ran-Dependencies:
+-----------------
+
+Title:      go-http-auth
+URL:        https://github.com/abbot/go-http-auth
+License:    Apache-2.0
+
+Title:      bpool
+URL:        https://github.com/oxtoacart/bpool
+License:    Apache-2.0
+
+Title:      net
+URL:        https://github.com/golang/net
+License:    BSD-3-Clause
+
+Font-Awesome:
+-------------
+
+Title:      Font Awesome Free
+URL:        https://github.com/golang/net
+License:    CC BY 4.0 International (Icons), SIL OFL 1.1 (Fonts), MIT (Code)
+Details:    https://fontawesome.com/license/free
+
+Additional contents:
+--------------------
+
+Additional licenses for the demo content are located in the "player/data/content-site/LICENSE-INFO.txt" file.
