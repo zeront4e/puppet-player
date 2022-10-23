@@ -1,6 +1,6 @@
 {
-    "previousEpisode": "Previous episode",
-    "nextEpisode": "Next episode",
+    "previousContent": "Previous content",
+    "nextContent": "Next content",
     "episodeSelection": "Episode selection",
     "play": "Play",
     "continue": "Continue",
@@ -9,7 +9,7 @@
     "back": "Back",
     "settings": "Settings",
     "extraContents": "Extra contents",
-    "zooming": "Zooming",
+    "mainMenuResizingLevel": "Main menu resizing level",
     "txtPlayBackgroundVideoIfPresent": "Play background-video, if present",
     "txtPlayBackgroundVideoInAllMenus": "Play background-video in all menus (not only main-menu)",
     "txtPlayBackgroundVideoSoundIfPresent": "Play sound of background-video, if present",

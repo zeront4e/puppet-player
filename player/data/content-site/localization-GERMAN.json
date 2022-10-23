@@ -1,6 +1,6 @@
 {
-    "previousEpisode": "Vorherige Folge",
-    "nextEpisode": "Nächste Folge",
+    "previousContent": "Vorheriger Inhalt",
+    "nextContent": "Nächster Inhalt",
     "episodeSelection": "Episodenauswahl",
     "play": "Abspielen",
     "continue": "Fortsetzen",
@@ -9,7 +9,7 @@
     "back": "Zurück",
     "settings": "Einstellungen",
     "extraContents": "Extra-Inhalte",
-    "zooming": "Zoomen",
+    "mainMenuResizingLevel": "Hauptmenü Größenanpassung-Level",
     "txtPlayBackgroundVideoIfPresent": "Spiele Hintergrundvideo, wenn vorhanden",
     "txtPlayBackgroundVideoInAllMenus": "Spiele Hintergrundvideo in allen Menüs (nicht nur Hauptmenü)",
     "txtPlayBackgroundVideoSoundIfPresent": "Spiele Sound von Hindergrundvideo, wenn vorhanden",

@@ -43,9 +43,9 @@ const PLAYER_CONTROLS_ARRAY = [
     'duration', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen'
 ];
 
-const GUI_MAIN_MENU_IMAGE_COVER_WIDTH = 300;
-const GUI_MAIN_MENU_TITLE_FONT_SIZE = 2.6;
-const GUI_MAIN_MENU_MENU_DESCRIPTION_FONT_SIZE = 1.5;
+const GUI_MAIN_MENU_IMAGE_COVER_WIDTH = 300; //WIDTH IN PX
+const GUI_MAIN_MENU_TITLE_FONT_SIZE = 2.6; //SIZE IN EM
+const GUI_MAIN_MENU_MENU_DESCRIPTION_FONT_SIZE = 1.5; //SIZE IN EM
 
 const {
     createApp
@@ -70,7 +70,7 @@ createApp({
             backgroundVideoPath: "",
 
             //Settings GUI variables.
-            settingsPlayBackgroundVideo: true,
+            settingsPlayBackgroundVideo: false,
             settingsPlayBackgroundVideoSound: true,
             settingsPlayBackgroundVideoInAllMenus: false,
             settingsPlayerAutoplay: true,
@@ -94,7 +94,8 @@ createApp({
             playerLastContentTimestamp: null,
 
             //Global variables.
-            globalOverlapCheckIntervalId: null
+            globalOverlapCheckIntervalId: null,
+            globalAudioFadeIntervalId: null,
         }
     },
     computed: {
@@ -102,7 +103,7 @@ createApp({
             return !this.guiHideMainMenuUi && this.showBackgroundVideo;
         },
         showBackgroundVideo() {
-            if(this.backgroundVideoPath.length === 0)
+            if(!this.settingsPlayBackgroundVideo || this.backgroundVideoPath.length === 0)
                 return false;
 
             if(!this.guiHideMainMenuUi)
@@ -128,7 +129,10 @@ createApp({
         },
         guiHideSettingsUi() {
             return this.guiCurrentUI !== SETTINGS_GUI;
-        },  
+        },
+        showContentNavigation() {
+            return this.isPreviousContentAvailable || this.isNextContentAvailable;
+        },
         isNextContentAvailable() {
             if(this.playerUsesContentsIndex) {
                 return this.contents.length > 1 && this.contentsIndex < this.contents.length - 1;
@@ -183,7 +187,10 @@ createApp({
                 this.settingsResizingSteps -= 1;
             }
 
-            if(this.settingsResizingSteps === 0) {
+            this.resizeGuiComponents(this.settingsResizingSteps);
+        },
+        resizeGuiComponents: function(resizingSteps) {
+            if(resizingSteps === 0) {
                 this.guiMainMenuImageCoverWidth = GUI_MAIN_MENU_IMAGE_COVER_WIDTH;
                 this.guiMainMenuTitleFontSize = GUI_MAIN_MENU_TITLE_FONT_SIZE;
                 this.guiMainMenuDescriptionFontSize = GUI_MAIN_MENU_MENU_DESCRIPTION_FONT_SIZE;
@@ -192,30 +199,34 @@ createApp({
                 let iterations = 0;
                 let inversion = 1;
 
-                if(this.settingsResizingSteps < 0) {
-                    iterations = this.settingsResizingSteps * -1;
+                if(resizingSteps < 0) {
+                    iterations = resizingSteps * -1;
                     inversion = -1;
                 }
                 else {
-                    iterations = this.settingsResizingSteps;
+                    iterations = resizingSteps;
                 }
 
                 let guiMainMenuImageCoverWidth = GUI_MAIN_MENU_IMAGE_COVER_WIDTH;
                 let guiMainMenuTitleFontSize = GUI_MAIN_MENU_TITLE_FONT_SIZE;
                 let guiMainMenuDescriptionFontSize = GUI_MAIN_MENU_MENU_DESCRIPTION_FONT_SIZE;
 
-                for (let index = 0; index < iterations; index++) {
-                    const nextGuiMainMenuImageCoverWidth = guiMainMenuImageCoverWidth + guiMainMenuImageCoverWidth * 0.25 * inversion;
+                const calculateNextValue = (value) => {
+                    return value + value * 0.25 * inversion;
+                };
+
+                for(let index = 0; index < iterations; index++) {
+                    const nextGuiMainMenuImageCoverWidth = calculateNextValue(guiMainMenuImageCoverWidth);
 
                     if(nextGuiMainMenuImageCoverWidth > 0)
                         guiMainMenuImageCoverWidth = nextGuiMainMenuImageCoverWidth;
 
-                    const nextGuiMainMenuTitleFontSize = guiMainMenuTitleFontSize + guiMainMenuTitleFontSize * 0.25 * inversion;
+                    const nextGuiMainMenuTitleFontSize = calculateNextValue(guiMainMenuTitleFontSize);
 
                     if(nextGuiMainMenuImageCoverWidth > 0)
                         guiMainMenuTitleFontSize = nextGuiMainMenuTitleFontSize;
 
-                    const nextGuiMainMenuDescriptionFontSize = guiMainMenuDescriptionFontSize + guiMainMenuDescriptionFontSize * 0.25 * inversion;
+                    const nextGuiMainMenuDescriptionFontSize = calculateNextValue(guiMainMenuDescriptionFontSize);
 
                     if(nextGuiMainMenuDescriptionFontSize > 0)
                         guiMainMenuDescriptionFontSize = nextGuiMainMenuDescriptionFontSize;
@@ -260,6 +271,7 @@ createApp({
             settingsObject.settingsPlayerEnterFullscreen = this.settingsPlayerEnterFullscreen;
             settingsObject.settingsEnterFullscreenAfterIntro = this.settingsEnterFullscreenAfterIntro;
             settingsObject.settingsAutoRestrictMobilePlayerGui = this.settingsAutoRestrictMobilePlayerGui;
+            settingsObject.settingsResizingSteps = this.settingsResizingSteps;
 
             const settingsObjectString = JSON.stringify(settingsObject);
 
@@ -271,13 +283,29 @@ createApp({
             if(playerSettingsString != null) {
                 const settingsObject = JSON.parse(playerSettingsString);
 
-                this.settingsPlayBackgroundVideo = settingsObject.settingsPlayBackgroundVideo;
-                this.settingsPlayBackgroundVideoSound = settingsObject.settingsPlayBackgroundVideoSound;
-                this.settingsPlayBackgroundVideoInAllMenus = settingsObject.settingsPlayBackgroundVideoInAllMenus;
-                this.settingsPlayerAutoplay = settingsObject.settingsPlayerAutoplay;
-                this.settingsPlayerEnterFullscreen = settingsObject.settingsPlayerEnterFullscreen;
-                this.settingsEnterFullscreenAfterIntro = settingsObject.settingsEnterFullscreenAfterIntro;
-                this.settingsAutoRestrictMobilePlayerGui = settingsObject.settingsAutoRestrictMobilePlayerGui;
+                if(settingsObject.settingsPlayBackgroundVideo != null)
+                    this.settingsPlayBackgroundVideo = settingsObject.settingsPlayBackgroundVideo;
+
+                if(settingsObject.settingsPlayBackgroundVideoSound != null)
+                    this.settingsPlayBackgroundVideoSound = settingsObject.settingsPlayBackgroundVideoSound;
+
+                if(settingsObject.settingsPlayBackgroundVideoInAllMenus != null)
+                    this.settingsPlayBackgroundVideoInAllMenus = settingsObject.settingsPlayBackgroundVideoInAllMenus;
+
+                if(settingsObject.settingsPlayerAutoplay != null)
+                    this.settingsPlayerAutoplay = settingsObject.settingsPlayerAutoplay;
+
+                if(settingsObject.settingsPlayerEnterFullscreen != null)
+                    this.settingsPlayerEnterFullscreen = settingsObject.settingsPlayerEnterFullscreen;
+
+                if(settingsObject.settingsEnterFullscreenAfterIntro != null)
+                    this.settingsEnterFullscreenAfterIntro = settingsObject.settingsEnterFullscreenAfterIntro;
+
+                if(settingsObject.settingsAutoRestrictMobilePlayerGui != null)
+                    this.settingsAutoRestrictMobilePlayerGui = settingsObject.settingsAutoRestrictMobilePlayerGui;
+
+                if(settingsObject.settingsResizingSteps != null)
+                    this.settingsResizingSteps = settingsObject.settingsResizingSteps;
             }
         },
         onBtnShowSettings: function() {
@@ -731,82 +759,68 @@ createApp({
             if(this.settingsPlayBackgroundVideo) {
                 const backgroundVideo = document.getElementById("background-video");
 
-                //Try to play the video, after the pause succeeded.
-                const playIntervalId = setInterval(() => {
-                    if(backgroundVideo.dataset.pausePending !== "true") {
-                        clearInterval(playIntervalId);
+                //Stop any existing fade interval.
+                if(this.globalAudioFadeIntervalId != null)
+                    clearInterval(this.globalAudioFadeIntervalId);
 
-                        if(!backgroundVideo.paused)
-                            return;
+                //Try to play the video.
+                backgroundVideo.play().finally(() => {
+                    if(this.settingsPlayBackgroundVideoSound) {
+                        //Fade in of audio.
+                        backgroundVideo.volume = 0;
 
-                        backgroundVideo.dataset.playPending = "true";
+                        this.globalAudioFadeIntervalId = setInterval(() => {
+                            if(this.globalAudioFadeIntervalId != null && backgroundVideo.volume < 1) {
+                                let newAudioVolume = backgroundVideo.volume + 0.05;
 
-                        backgroundVideo.play().finally(() => {
-                            if(this.settingsPlayBackgroundVideoSound) {
-                                //Fadein of audio.
-                                backgroundVideo.volume = 0;
+                                if(newAudioVolume > 1)
+                                    newAudioVolume = 1;
 
-                                const audioFadeInIntervalId = setInterval(() => {
-                                    if(backgroundVideo.volume < 1) {
-                                        let newAudioVolume = backgroundVideo.volume + 0.05;
-
-                                        if(newAudioVolume > 1)
-                                            newAudioVolume = 1;
-
-                                        backgroundVideo.volume = newAudioVolume;
-                                    }
-                                    else {
-                                        clearInterval(audioFadeInIntervalId);
-
-                                        backgroundVideo.dataset.playPending = "false";
-                                    }
-                                }, 50);
+                                backgroundVideo.volume = newAudioVolume;
                             }
                             else {
-                                backgroundVideo.dataset.playPending = "false";
+                                if(this.globalAudioFadeIntervalId != null)
+                                    clearInterval(this.globalAudioFadeIntervalId);
                             }
-                        });
+                        }, 50);
                     }
-                }, 100);
+                });
             }
         },
         pauseBackgroundVideoIfPresent: function() {
             if(this.settingsPlayBackgroundVideo) {
                 const backgroundVideo = document.getElementById("background-video");
 
-                if(backgroundVideo.paused)
-                    return;
+                //Stop any existing fade interval.
+                if(this.globalAudioFadeIntervalId != null)
+                    clearInterval(this.globalAudioFadeIntervalId);
 
-                if(backgroundVideo.dataset.pausePending !== "true") {
-                    //Try to pause video, after play event succeeded.
-                    if(backgroundVideo.dataset.playPending !== "true") {
-                        backgroundVideo.dataset.pausePending = "true";
+                //Fadeout of audio.
+                this.globalAudioFadeIntervalId = setInterval(() => {
+                    if(this.globalAudioFadeIntervalId != null && backgroundVideo.volume > 0) {
+                        let newAudioVolume = backgroundVideo.volume - 0.05;
 
-                        //Fadeout of audio.
-                        const audioFadeOutIntervalId = setInterval(() => {
-                            if(backgroundVideo.volume > 0) {
-                                let newAudioVolume = backgroundVideo.volume - 0.05;
+                        if(newAudioVolume < 0)
+                            newAudioVolume = 0;
 
-                                if(newAudioVolume < 0)
-                                    newAudioVolume = 0;
-
-                                backgroundVideo.volume = newAudioVolume;
-                            }
-                            else {
-                                clearInterval(audioFadeOutIntervalId);
-
-                                backgroundVideo.pause();
-
-                                backgroundVideo.dataset.pausePending = "false";
-                            }
-                        }, 50);
+                        backgroundVideo.volume = newAudioVolume;
                     }
-                }
+                    else {
+                        if(this.globalAudioFadeIntervalId != null) {
+                            clearInterval(this.globalAudioFadeIntervalId);
+
+                            backgroundVideo.pause();
+                        }
+                    }
+                }, 50);
             }
         },
         loadAndSetupInitialData: function() {
             //Load settings.
             this.loadSettings();
+
+            //Set resizing steps, based on the stored steps count.
+            this.resizeGuiComponents(this.settingsResizingSteps);
 
             //Start automatic overlap check interval.
             this.globalOverlapCheckIntervalId = setInterval(() => {
@@ -818,9 +832,9 @@ createApp({
 
                 const overlap = this.checkDomElementsOverlap(introImageElement, introButtonElement);
 
-                const reducedImageWith = this.guiIntroCoverImageWidth - this.guiIntroCoverImageWidth * 0.25;
-
                 if(overlap) {
+                    const reducedImageWith = this.guiIntroCoverImageWidth - this.guiIntroCoverImageWidth * 0.25;
+
                     if(reducedImageWith > 0) {
                         this.guiIntroCoverImageWidth = reducedImageWith;
                     }
@@ -830,7 +844,7 @@ createApp({
                         this.globalOverlapCheckIntervalId = null;
                     }
                 }
-            }, 500);
+            }, 300);
 
             //Load contents and meta-data.
             let setupStepsCount = 0;
@@ -1027,7 +1041,7 @@ createApp({
 
                     fetch(finalResourcePath).then(fetchResult => {
                         if (fetchResult.ok) {
-                            resolve(resourcePath);
+                            resolve(finalResourcePath);
                         }
                         else {
                             if(currentFileEndingIndex === fileExtensionsArray.length - 1) {
