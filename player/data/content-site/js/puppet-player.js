@@ -69,6 +69,8 @@ createApp({
             coverImagePath: "",
             backgroundVideoPath: "",
 
+            lastPlayerContent: null,
+
             //Settings GUI variables.
             settingsPlayBackgroundVideo: false,
             settingsPlayBackgroundVideoSound: true,
@@ -519,7 +521,88 @@ createApp({
             return promise;
         },
         playContent: function(content, instantPlayback, useFullscreen, startTime, hideControls) {
+            this.lastPlayerContent = content;
+
+            console.log("Try to play content:");
+            console.log(content);
+
             if(this.player === null) {
+                //Try to boost volume, if desired by the user.
+                const tryToBoostPlayerVolume = () => {
+                    let tmpPlayerDomElement = document.querySelector("div.player-container");
+
+                    if(tmpPlayerDomElement != null) {
+                        tmpPlayerDomElement = tmpPlayerDomElement.querySelector("video");
+
+                        if(tmpPlayerDomElement != null) {
+                            if(!tmpPlayerDomElement.hasAttribute("data-volume-boost-set")) {
+                                let masterBoostDoublePercentage = null;
+
+                                if(this.contentsMetaData.contentVolumeBoostPercentage != null) {
+                                    const boostIntPercentage = parseInt(this.contentsMetaData.contentVolumeBoostPercentage);
+
+                                    if(!isNaN(boostIntPercentage)) {
+                                        masterBoostDoublePercentage = boostIntPercentage / 100.0;
+                                    }
+                                    else {
+                                        console.warn("Unable to parse set player boost volume from configuration.");
+                                    }
+                                }
+
+                                let contentBoostDoublePercentage = null;
+
+                                if(this.lastPlayerContent.contentVolumeBoostPercentage != null) {
+                                    const boostIntPercentage = parseInt(this.lastPlayerContent.contentVolumeBoostPercentage);
+
+                                    if(!isNaN(boostIntPercentage)) {
+                                        contentBoostDoublePercentage = boostIntPercentage / 100.0;
+                                    }
+                                    else {
+                                        console.warn("Unable to parse player boost volume from single content configuration.");
+                                    }
+                                }
+
+                                let finalBoostDoublePercentage = null;
+
+                                if(contentBoostDoublePercentage != null) {
+                                    console.log("Use player boost volume property from single content configuration.");
+
+                                    finalBoostDoublePercentage = contentBoostDoublePercentage;
+                                }
+                                else if(masterBoostDoublePercentage != null) {
+                                    console.log("Use player boost volume property from contents configuration.");
+
+                                    finalBoostDoublePercentage = masterBoostDoublePercentage;
+                                }
+
+                                if(finalBoostDoublePercentage != null) {
+                                    tmpPlayerDomElement.setAttribute("data-volume-boost-set", "true");
+
+                                    const audioContext = new AudioContext();
+
+                                    const playerAudioSource = audioContext.createMediaElementSource(tmpPlayerDomElement);
+
+                                    const gainNode = audioContext.createGain();
+                                    gainNode.gain.value = 1 + finalBoostDoublePercentage;
+                                    
+                                    playerAudioSource.connect(gainNode);
+
+                                    gainNode.connect(audioContext.destination);
+
+                                    console.log("Set player boost volume percentage to " + (finalBoostDoublePercentage * 100) + 
+                                        "%. Total volume is now " + (100 + finalBoostDoublePercentage * 100) + "%.");
+                                }
+                                else {
+                                    console.warn("Unable to find player boost volume property in configuration.");
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        console.warn("Unable to find player video element to set boost volume!");
+                    }
+                };
+
                 //Create a new player element here, because we assumable need the permission by the user (click event).
                 const isMobileBrowser = () => {
                     const identifierString = navigator.userAgent || navigator.vendor || window.opera;
@@ -548,6 +631,8 @@ createApp({
                             this.playerLastContentTimestamp = this.player.currentTime * 1000;
                         }, 500);
                     }
+
+                    tryToBoostPlayerVolume();
                 });
 
                 this.player.on("pause", (event) => {
